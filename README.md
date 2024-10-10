@@ -29,6 +29,8 @@ El cuerpo principal del módulo es el módulo ESP-WROOM-32, y el chip periféric
 ![image](https://img.alicdn.com/imgextra/i4/1796335639/O1CN01N0Fr341rWiOshW1nQ_!!1796335639.jpg)
 
 # Diseño
+## Diagrama flujo
+![image](https://github.com/mingfanxu/Sistema-de-deteccion-de-tierra/blob/main/image/Diagrama.png)
 ## Diseño de piezas de medición de iluminación.
 El fotorresistor Rp se conecta en paralelo con R2. Después de dividirlo por R1, se envía a la MCU para la adquisición de ADC para obtener la información de iluminación. Se puede calcular el voltaje alimentado a la MCU.
 ![image](https://image.lceda.cn/pullimage/e1eZErYrEARtFCQk6aa7RiUkKmBcZOUJHAjCoU1W.png)
