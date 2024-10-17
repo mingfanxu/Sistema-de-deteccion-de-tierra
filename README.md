@@ -5,7 +5,7 @@ La tabla de la página web muestra los datos históricos recopilados (DHT11 est�
 
 # Materias
 1. ESP32 DHT11 
-2. Fotorresistor
+2. Fotor resistor
 3. Sensor de luz
 4. Pila 18650
 
