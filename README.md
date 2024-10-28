@@ -3,7 +3,7 @@ esp32 DHT11 Módulo de temperatura y humedad del suelo + sensor fotosensible La 
 la temperatura, la humedad y los datos fotosensibles se almacenan en la base de datos. 
 La tabla de la página web muestra los datos históricos recopilados (DHT11 está equipado con una batería)
 
-# Materias
+# Materiales
 1. ESP32 DHT11 
 2. Fotorresistor
 3. Sensor de luz
