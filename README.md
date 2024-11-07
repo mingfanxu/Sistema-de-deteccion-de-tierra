@@ -38,3 +38,6 @@ El fotorresistor Rp se conecta en paralelo con R2. Después de dividirlo por R1,
 ## Sensor DHT11
 Como es un módulo combinado, el pin22 está conectado al sensor DHT11.  
 ![image](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR874OaZVhtU0_c6Qd2rV08p_QxA-XZJ-YQ99-RrYLVmkp3K0gNEfDj4y0xi7XBMORFDzY&usqp=CAU)
+
+# Base de datos
+![imagen]()
