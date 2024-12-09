@@ -31,7 +31,7 @@ El cuerpo principal del módulo es el módulo ESP-WROOM-32, y el chip periféric
 # Diseño
 ## Diagrama flujo
 ![image](https://github.com/mingfanxu/Sistema-de-deteccion-de-tierra/blob/main/image/Diagrama.png)
-## Diseño de piezas de medición de iluminación.
+## Sensor fotosensible
 ![image](https://github.com/mingfanxu/Sistema-de-deteccion-de-tierra/blob/main/image/light.png)
 
 ## Sensor DHT11
