@@ -1,0 +1,260 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>数据查看</title>
+    <link rel="stylesheet" href="./static/css/layui.css">
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div style="padding: 0 15px;" id="app">
+        <!-- 内容主体区域 -->
+        <div class="layui-row layui-col-space10" style="padding-top: 15px;">
+            <div class="layui-col-xs6">
+                <table class="layui-table">
+                    <thead>
+                    <tr>
+                        <th v-for="(item, index) in tieleList">{{item}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) in dataList">
+                        <td>{{ item.createTime }}</td>
+                        <td>{{ item.temp }}</td>
+                        <td>{{ item.humi }}</td>
+                        <td>{{ item.light }}</td>
+                        <td>{{ item.soil }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="layui-box layui-laypage layui-laypage-default" style="padding: 0 15px;">
+                    <a class="layui-laypage-prev layui-disabled" v-if="page == 1">
+                        <i class="layui-icon layui-icon-left"></i>
+                    </a>
+                    <a class="layui-laypage-prev" v-else @click="prePage()">
+                        <i class="layui-icon layui-icon-left"></i>
+                    </a>
+                    <span class="layui-laypage-curr">
+								<em class=" layui-laypage-em"></em>
+								<em>{{ page }}</em>
+							</span>
+                    <span class="layui-laypage-spr">…</span>
+                    <a class="layui-laypage-last layui-disabled">Total{{ totalPage }}Pagina</a>
+                    <a class="layui-laypage-next layui-disabled" v-if="page == totalPage">
+                        <i class="layui-icon layui-icon-right"></i>
+                    </a>
+                    <a class="layui-laypage-next" v-else @click="nextPage()">
+                        <i class="layui-icon layui-icon-right"></i>
+                    </a>
+                    <span class="layui-laypage-skip">No
+						<input type="text" min="1" v-model="page" class="layui-input">Pagina
+					</span>
+                    <span class="layui-laypage-count">Total {{ total }} Linea</span>
+                    <span class="layui-laypage-limits">
+						<select v-model="formData.pageSize">
+							<option value="10" selected="">10 Linea/Pagina</option>
+							<option value="50">50 Linea/Pagina</option>
+							<option value="100">100 Linea/Pagina</option>
+						</select>
+						<a class="layui-laypage-btn" @click="changePage()">OK</a>
+					</span>
+                </div>
+            </div>
+            <div class="layui-col-xs6" style="padding-top: 15px;">
+				<blockquote class="layui-elem-quote"><h2>【DATOS EN TIEMPO REAL】{{ newData }}</h2></blockquote> <!--实时数据-->
+                <div class="layui-collapse" lay-accordion="">
+					<div class="layui-colla-item">
+					    <h2 class="layui-colla-title">Gráfico de líneas de temperatura</h2><!--温度折线图-->
+					    <div class="layui-colla-content layui-show">
+							<div id="tempChart" style="height:400px;"></div> 
+					    </div>
+					</div>
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">Gráfico de líneas de humedad del aire</h2><!--空气温湿度折线图-->
+                        <div class="layui-colla-content layui-show">
+                        	<div id="humiChart" style="height:400px;"></div> 
+                        </div>
+                    </div>
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">Gráfico de líneas de intensidad de luz</h2><!--光照强度折线图-->
+                        <div class="layui-colla-content layui-show">
+                        	<div id="lightChart" style="height:400px;"></div> 
+                        </div>
+                    </div>
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">Gráfico de líneas de humedad del suelo</h2><!--土壤湿度折线图-->
+                        <div class="layui-colla-content layui-show">
+                        	<div id="soilChart" style="height:400px;"></div> 
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="./static/layui.js"></script>
+<script src="./static/js/vue.min.js"></script>
+<script src="./static/js/axios.min.js"></script>
+<script src="./static/js/echarts.min.js"></script>
+<script src="./static/js/my.js"></script>
+<script>
+    // 绘制图表的函数
+    function drawChart() {
+        // 创建图表实例
+        let tempChart = echarts.init(document.getElementById('tempChart'))
+        let humiChart = echarts.init(document.getElementById('humiChart'))
+        let lightChart = echarts.init(document.getElementById('lightChart'))
+        let soilChart = echarts.init(document.getElementById('soilChart'))
+        let chartData = [...vm.echartsList]
+        //chartData.reverse()
+        let dates = chartData.map(item => item.createTime)
+        let tempValues = chartData.map(item => item.temp)
+        let humiValues = chartData.map(item => item.humi)
+        let lightValues = chartData.map(item => item.light)
+        let soilValues = chartData.map(item => item.soil)
+        // 配置项
+        // 使用配置项绘制图表
+        tempChart.setOption(getOption('Temperatura', dates, tempValues))
+        humiChart.setOption(getOption('Humedad del aire', dates, humiValues))
+        lightChart.setOption(getOption('Intensidad de la luz', dates, lightValues))
+        soilChart.setOption(getOption('Humedad del suelo', dates, soilValues))
+    }
+	
+	function getOption(name, dates, values){
+		return {
+		    title: {
+		        text: name, // 标题文本
+		        textStyle: {
+		            color: '#333', // 标题文字颜色
+		            fontSize: 18 // 标题文字大小
+		        },
+		        left: 'center' // 标题水平居中
+		    },
+		    xAxis: {
+		        type: 'category',
+				boundaryGap: false,
+		        data: dates // x 轴数据，假设数据中的日期存储在 dates 属性中
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+		    series: [{
+		        type: 'line',
+		        data: values, // y 轴数据 bar
+		        label: {
+		            show: true, // 显示标签
+		            position: 'top', // 标签位置，默认为上方
+		            formatter: '{c}', // 标签内容，{c} 表示数据值
+		            color: '#000' // 标签文字颜色
+		        }
+		    }]
+		}
+	}
+</script>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data() {
+            return {
+                newData: 'OFF-LINE',
+                dataList: [],
+				echartsList: [],
+                tieleList: ["Tiempo", "Temperatura", "Humedad del aire", "Intensidad de la luz", "Humedad del suelo"],//"创建时间", "温度", "空气湿度", "光照强度", "土壤湿度"
+                formData: {
+                    pageNum: 1,
+                    pageSize: 10
+                },
+                page: 1,
+                totalPage: 1,
+                total: 0
+            }
+        },
+        created() {
+			this.getEchartsList()
+            this.getDataList()
+			this.getNewData()
+			setInterval(() => {
+				vm.getNewData()
+				console.log('(^_^)')
+			}, 3000)
+        },
+        methods: {
+            changePage() {
+                this.formData.pageNum = this.page
+                this.getDataList()
+            },
+            nextPage() {
+                if (this.page + 1 > this.totalPage) {
+                    return;
+                }
+                this.formData.pageNum += 1
+                this.getDataList()
+            },
+            prePage() {
+                if (this.page <= 1) {
+                    return;
+                }
+                this.formData.pageNum -= 1
+                this.getDataList()
+            },
+            getDataList() {
+                let index2 = layer.load()
+                myAxios.get("/base/getPage", {params: this.formData})
+                    .then(function(res) {
+                        if (res.data.code == 1) {
+                            vm.dataList = res.data.data.records
+                            vm.page = res.data.data.current
+                            vm.totalPage = res.data.data.pages
+                            vm.total = res.data.data.total
+                        } else {
+                            layer.msg(res.data.msg)
+                        }
+                    })
+                    .catch(function(error) {
+                        // 请求失败的处理逻辑
+                        layer.msg('请求失败')
+                    }).finally(function() {
+                    layer.close(index2)
+                })
+
+            },
+			getEchartsList() {
+			    let index3 = layer.load()
+			    myAxios.get("/base/getList")
+				.then(function(res) {
+					if (res.data.code == 1) {
+						vm.echartsList = res.data.data.records
+						drawChart()
+					} else {
+						layer.msg(res.data.msg)
+					}
+				})
+				.catch(function(error) {
+					// 请求失败的处理逻辑
+					layer.msg('请求失败')
+				}).finally(function() {
+			        layer.close(index3)
+			    })
+			},
+			getNewData() {
+			    myAxios.get("/base/getNewData")
+				.then(function(res) {
+					if (res.data.code == 1) {
+						vm.newData = res.data.data
+					} else {
+						layer.msg(res.data.msg)
+					}
+				})
+				.catch(function(error) {
+					// 请求失败的处理逻辑
+					console.log('实时数据请求失败')
+				})
+			}
+        }
+    })
+</script>
+</body>
+</html>
