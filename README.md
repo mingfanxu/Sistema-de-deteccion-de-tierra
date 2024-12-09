@@ -5,9 +5,8 @@ La tabla de la página web muestra los datos históricos recopilados (DHT11 est�
 
 # Materiales
 1. ESP32 DHT11 
-2. Fotorresistor
-3. Sensor de luz
-4. Pila 18650
+2. Sensor de luz
+3. Pila 18650
 
 # Parámetros y pines de función
 **_Voltaje de la fuente de alimentación_** CC 3,6 V ~ 5 V (entrada de puerto MICRO USB de 5 V)  
